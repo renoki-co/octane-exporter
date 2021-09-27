@@ -32,6 +32,8 @@ abstract class TestCase extends Orchestra
 
         $factory->warm($app, Octane::defaultServicesToWarm());
 
+        $app['config']['app.providers'] = array_merge($app['config']['app.providers'] ?? [], $this->getPackageProviders($app));
+
         return $app;
     }
 
@@ -59,6 +61,7 @@ abstract class TestCase extends Orchestra
     {
         $app['config']->set('app.key', 'wslxrEFGWY6GfGhvN9L3wH3KSRJQQpBD');
         $app['config']->set('ray.enable', false);
+
         $app['config']->set('octane.warm', Arr::except(Octane::defaultServicesToWarm(), [
             'cache',
             'cache.store',
@@ -81,11 +84,16 @@ abstract class TestCase extends Orchestra
 
         $app->register(new OctaneServiceProvider($app));
 
-        $worker = new FakeWorker($appFactory, $roadRunnerClient = new FakeClient($requests));
-        $app->bind(Client::class, fn () => $roadRunnerClient);
+        foreach ($this->getPackageProviders($app) as $provider) {
+            $app->register(new $provider($app));
+        }
+
+        $worker = new FakeWorker($appFactory, $client = new FakeClient($requests));
+
+        $app->bind(Client::class, fn () => $client);
 
         $worker->boot();
 
-        return [$app, $worker, $roadRunnerClient];
+        return [$app, $worker, $client];
     }
 }

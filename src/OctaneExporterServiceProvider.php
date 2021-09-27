@@ -3,6 +3,7 @@
 namespace RenokiCo\OctaneExporter;
 
 use Illuminate\Support\ServiceProvider;
+use RenokiCo\LaravelExporter\Exporter;
 
 class OctaneExporterServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,11 @@ class OctaneExporterServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Exporter::metrics([
+            Metrics\OctaneRequestsCount::class,
+            Metrics\OctaneStatus::class,
+            Metrics\OctaneTotalRequestsCount::class,
+        ]);
     }
 
     /**
