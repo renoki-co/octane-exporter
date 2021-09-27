@@ -1,7 +1,14 @@
 <?php
 
-namespace RenokiCo\:package_namespace\Test;
+namespace RenokiCo\OctaneExporter\Test;
 
+use Illuminate\Support\Arr;
+use Laravel\Octane\ApplicationFactory;
+use Laravel\Octane\Octane;
+use Laravel\Octane\OctaneServiceProvider;
+use Laravel\Octane\Testing\Fakes\FakeClient;
+use Laravel\Octane\Testing\Fakes\FakeWorker;
+use Mockery;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
@@ -12,14 +19,25 @@ abstract class TestCase extends Orchestra
     public function setUp(): void
     {
         parent::setUp();
+    }
 
-        $this->resetDatabase();
+    /**
+     * {@inheritdoc}
+     */
+    public function createApplication()
+    {
+        $factory = new ApplicationFactory(realpath(__DIR__.'/../vendor/orchestra/testbench-core/laravel'));
 
-        $this->loadLaravelMigrations(['--database' => 'sqlite']);
+        $app = $this->appFactory()->createApplication();
 
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $factory->warm($app, Octane::defaultServicesToWarm());
 
-        $this->withFactories(__DIR__.'/database/factories');
+        return $app;
+    }
+
+    protected function appFactory()
+    {
+        return new ApplicationFactory(realpath(__DIR__.'/../vendor/orchestra/testbench-core/laravel'));
     }
 
     /**
@@ -28,7 +46,9 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            //
+            \Laravel\Octane\OctaneServiceProvider::class,
+            \RenokiCo\LaravelExporter\LaravelExporterServiceProvider::class,
+            \RenokiCo\OctaneExporter\OctaneExporterServiceProvider::class,
         ];
     }
 
@@ -38,22 +58,34 @@ abstract class TestCase extends Orchestra
     public function getEnvironmentSetUp($app)
     {
         $app['config']->set('app.key', 'wslxrEFGWY6GfGhvN9L3wH3KSRJQQpBD');
-        $app['config']->set('auth.providers.users.model', Models\User::class);
-        $app['config']->set('database.default', 'sqlite');
-        $app['config']->set('database.connections.sqlite', [
-            'driver'   => 'sqlite',
-            'database' => __DIR__.'/database.sqlite',
-            'prefix'   => '',
-        ]);
+        $app['config']->set('ray.enable', false);
+        $app['config']->set('octane.warm', Arr::except(Octane::defaultServicesToWarm(), [
+            'cache',
+            'cache.store',
+            'db',
+            'db.factory',
+        ]));
     }
 
     /**
-     * Reset the database.
+     * Create a new octane context with requests to run.
      *
-     * @return void
+     * @param  array  $requests
+     * @return array
      */
-    protected function resetDatabase()
+    protected function createOctaneContext(array $requests)
     {
-        file_put_contents(__DIR__.'/database.sqlite', null);
+        $appFactory = Mockery::mock(ApplicationFactory::class);
+
+        $appFactory->shouldReceive('createApplication')->andReturn($app = $this->createApplication());
+
+        $app->register(new OctaneServiceProvider($app));
+
+        $worker = new FakeWorker($appFactory, $roadRunnerClient = new FakeClient($requests));
+        $app->bind(Client::class, fn () => $roadRunnerClient);
+
+        $worker->boot();
+
+        return [$app, $worker, $roadRunnerClient];
     }
 }
