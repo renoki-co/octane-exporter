@@ -36,7 +36,7 @@ class TrackTerminatedRequests
     }
 
     /**
-     * Increment status codes requests for category (i.e. 2xx, 4xx, etc.)
+     * Increment status codes requests for category (i.e. 2xx, 4xx, etc.).
      *
      * @param  string  $code
      * @return mixed
