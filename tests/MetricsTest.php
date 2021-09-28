@@ -33,7 +33,6 @@ class MetricsTest extends TestCase
             return $app['request'];
         });
 
-
         $app['router']->get('/exporter/group/octane-metrics', function (Application $app) {
             return Exporter::exportAsPlainText('octane-metrics');
         });

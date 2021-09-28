@@ -18,7 +18,6 @@ class TrackTerminatedTicks
         $this->decrementActiveTicksCount();
     }
 
-
     /**
      * Decrement the active ticks count.
      *
