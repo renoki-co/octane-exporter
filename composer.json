@@ -1,7 +1,7 @@
 {
     "name": "renoki-co/octane-exporter",
     "description": "Export Laravel Octane metrics using this Prometheus exporter.",
-    "keywords": ["laravel", "php"],
+    "keywords": ["laravel", "php", "octane", "swoole", "metrics", "grafana", "prometheus"],
     "license": "Apache-2.0",
     "homepage": "https://github.com/renoki-co/octane-exporter",
     "authors": [

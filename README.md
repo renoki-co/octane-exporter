@@ -3,7 +3,7 @@ Laravel Octane Prometheus Exporter
 
 ![CI](https://github.com/renoki-co/octane-exporter/workflows/CI/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/renoki-co/octane-exporter/branch/master/graph/badge.svg)](https://codecov.io/gh/renoki-co/octane-exporter/branch/master)
-[![StyleCI](https://github.styleci.io/repos/:styleci_code/shield?branch=master)](https://github.styleci.io/repos/:styleci_code)
+[![StyleCI](https://github.styleci.io/repos/410801641/shield?branch=master)](https://github.styleci.io/repos/410801641)
 [![Latest Stable Version](https://poser.pugx.org/renoki-co/octane-exporter/v/stable)](https://packagist.org/packages/renoki-co/octane-exporter)
 [![Total Downloads](https://poser.pugx.org/renoki-co/octane-exporter/downloads)](https://packagist.org/packages/renoki-co/octane-exporter)
 [![Monthly Downloads](https://poser.pugx.org/renoki-co/octane-exporter/d/monthly)](https://packagist.org/packages/renoki-co/octane-exporter)
