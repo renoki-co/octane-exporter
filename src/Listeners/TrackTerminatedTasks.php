@@ -18,7 +18,6 @@ class TrackTerminatedTasks
         $this->decrementActiveTasksCount();
     }
 
-
     /**
      * Decrement the active tasks count.
      *
