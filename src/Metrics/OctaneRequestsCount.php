@@ -33,15 +33,16 @@ class OctaneRequestsCount extends GaugeMetric
             ];
 
             foreach ($metrics as $metric) {
-                $this->labels(['status' => $metric])->set(value: 0);
+                $this->set(value: 0, labels: ['status' => $metric]);
             }
 
             return;
         }
 
         foreach ($requests as $metric => $value) {
-            $this->labels(['status' => $metric])->set(
+            $this->set(
                 value: $value,
+                labels: ['status' => $metric],
             );
         }
     }
