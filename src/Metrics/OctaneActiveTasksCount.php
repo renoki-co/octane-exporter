@@ -5,7 +5,7 @@ namespace RenokiCo\OctaneExporter\Metrics;
 use Laravel\Octane\Facades\Octane;
 use RenokiCo\LaravelExporter\GaugeMetric;
 
-class OctaneRequestsCount extends GaugeMetric
+class OctaneActiveTasksCount extends GaugeMetric
 {
     /**
      * The group this metric gets shown into.
@@ -21,29 +21,9 @@ class OctaneRequestsCount extends GaugeMetric
      */
     public function update(): void
     {
-        $requests = Octane::table('octane_exporter_requests')->get('requests');
+        $tasks = Octane::table('octane_exporter_tasks')->get('tasks', 'active_count');
 
-        if (! is_array($requests)) {
-            $metrics = [
-                'total_count',
-                '2xx_count',
-                '3xx_count',
-                '4xx_count',
-                '5xx_count',
-            ];
-
-            foreach ($metrics as $metric) {
-                $this->labels(['status' => $metric])->set(value: 0);
-            }
-
-            return;
-        }
-
-        foreach ($requests as $metric => $value) {
-            $this->labels(['status' => $metric])->set(
-                value: $value,
-            );
-        }
+        $this->set(value: $tasks);
     }
 
     /**
@@ -53,7 +33,7 @@ class OctaneRequestsCount extends GaugeMetric
      */
     protected function name(): string
     {
-        return 'octane_requests_count';
+        return 'octane_active_tasks_count';
     }
 
     /**
@@ -63,7 +43,7 @@ class OctaneRequestsCount extends GaugeMetric
      */
     protected function help(): string
     {
-        return 'Get the number of requests, by status, that passed through Octane.';
+        return 'Get the number of active tasks that pass through Octane.';
     }
 
     /**
@@ -73,7 +53,7 @@ class OctaneRequestsCount extends GaugeMetric
      */
     protected function allowedLabels(): array
     {
-        return ['remote_addr', 'addr', 'name', 'status'];
+        return ['remote_addr', 'addr', 'name'];
     }
 
     /**

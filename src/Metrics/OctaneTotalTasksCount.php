@@ -3,9 +3,9 @@
 namespace RenokiCo\OctaneExporter\Metrics;
 
 use Laravel\Octane\Facades\Octane;
-use RenokiCo\LaravelExporter\CounterMetric;
+use RenokiCo\LaravelExporter\GaugeMetric;
 
-class OctaneTotalRequestsCount extends CounterMetric
+class OctaneTotalTasksCount extends GaugeMetric
 {
     /**
      * The group this metric gets shown into.
@@ -15,13 +15,25 @@ class OctaneTotalRequestsCount extends CounterMetric
     public static $showsOnGroup = 'octane-metrics';
 
     /**
+     * Perform the update call on the collector.
+     *
+     * @return void
+     */
+    public function update(): void
+    {
+        $tasks = Octane::table('octane_exporter_tasks')->get('tasks', 'total_count');
+
+        $this->set(value: $tasks);
+    }
+
+    /**
      * Get the metric name.
      *
      * @return string
      */
     protected function name(): string
     {
-        return 'octane_total_requests_count';
+        return 'octane_total_tasks_count';
     }
 
     /**
@@ -31,7 +43,7 @@ class OctaneTotalRequestsCount extends CounterMetric
      */
     protected function help(): string
     {
-        return 'Get the number of total requests that passed through Octane.';
+        return 'Get the number of total tasks that passed through Octane.';
     }
 
     /**

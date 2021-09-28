@@ -4,21 +4,32 @@ namespace RenokiCo\OctaneExporter\Test;
 
 use Illuminate\Support\Arr;
 use Laravel\Octane\ApplicationFactory;
+use Laravel\Octane\Facades\Octane as FacadesOctane;
 use Laravel\Octane\Octane;
 use Laravel\Octane\OctaneServiceProvider;
 use Laravel\Octane\Testing\Fakes\FakeClient;
 use Laravel\Octane\Testing\Fakes\FakeWorker;
 use Mockery;
 use Orchestra\Testbench\TestCase as Orchestra;
+use RenokiCo\OctaneExporter\Test\Fixtures\Table;
 
 abstract class TestCase extends Orchestra
 {
+    /**
+     * The Swoole tables for testing.
+     *
+     * @var SwooleTable[]
+     */
+    protected $tables = [];
+
     /**
      * {@inheritdoc}
      */
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->createSwooleTables();
     }
 
     /**
@@ -33,6 +44,8 @@ abstract class TestCase extends Orchestra
         $factory->warm($app, Octane::defaultServicesToWarm());
 
         $app['config']['app.providers'] = array_merge($app['config']['app.providers'] ?? [], $this->getPackageProviders($app));
+
+        $this->createSwooleTables();
 
         return $app;
     }
@@ -95,5 +108,60 @@ abstract class TestCase extends Orchestra
         $worker->boot();
 
         return [$app, $worker, $client];
+    }
+
+    /**
+     * Create Swoole tables.
+     *
+     * @return void
+     */
+    protected function createSwooleTables(): void
+    {
+        $tables = [
+            'octane_exporter_requests:1' => [
+                'total_count' => 'int',
+                '2xx_count' => 'int',
+                '3xx_count' => 'int',
+                '4xx_count' => 'int',
+                '5xx_count' => 'int',
+            ],
+            'octane_exporter_tasks:1' => [
+                'total_count' => 'int',
+                'active_count' => 'int',
+            ],
+            'octane_exporter_workers:1' => [
+                'active_count' => 'int',
+            ],
+            'octane_exporter_ticks:1' => [
+                'total_count' => 'int',
+                'active_count' => 'int',
+            ],
+        ];
+
+        $mock = FacadesOctane::partialMock();
+
+        foreach ($tables as $name => $columns) {
+            $table = new Table(explode(':', $name)[1] ?? 1000);
+
+            foreach ($columns ?? [] as $columnName => $column) {
+                $table->column($columnName, match (explode(':', $column)[0] ?? 'string') {
+                    'string' => Table::TYPE_STRING,
+                    'int' => Table::TYPE_INT,
+                    'float' => Table::TYPE_FLOAT,
+                }, explode(':', $column)[1] ?? 1000);
+            }
+
+            $table->create();
+
+            $tableName = explode(':', $name)[0];
+
+            $this->tables[$tableName] = $table;
+        }
+
+        foreach ($this->tables as $tableName => $table) {
+            $mock->allows('table')
+                ->with($tableName)
+                ->andReturn($this->tables[$tableName]);
+        }
     }
 }

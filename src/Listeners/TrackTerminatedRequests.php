@@ -4,9 +4,6 @@ namespace RenokiCo\OctaneExporter\Listeners;
 
 use Laravel\Octane\Events\RequestTerminated;
 use Laravel\Octane\Facades\Octane;
-use RenokiCo\LaravelExporter\Exporter;
-use RenokiCo\OctaneExporter\Metrics\OctaneRequestsCount;
-use RenokiCo\OctaneExporter\Metrics\OctaneTotalRequestsCount;
 
 class TrackTerminatedRequests
 {
@@ -35,7 +32,7 @@ class TrackTerminatedRequests
      */
     protected function incrementRequestsCount()
     {
-        return Octane::table('octane_exporter')->incr('requests', 'total_count');
+        return Octane::table('octane_exporter_requests')->incr('requests', 'total_count');
     }
 
     /**
@@ -46,6 +43,6 @@ class TrackTerminatedRequests
      */
     protected function incrementRequestsForStatus(string $code = '2xx')
     {
-        return Octane::table('octane_exporter')->incr('requests', "{$code}_count");
+        return Octane::table('octane_exporter_requests')->incr('requests', "{$code}_count");
     }
 }
