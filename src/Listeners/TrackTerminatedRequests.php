@@ -15,7 +15,7 @@ class TrackTerminatedRequests
      */
     public function handle(RequestTerminated $event): void
     {
-        if ($event->request->route()->getName() === 'laravel-exporter.metrics') {
+        if ($event->request->route()?->getName() === 'laravel-exporter.metrics') {
             return;
         }
 
