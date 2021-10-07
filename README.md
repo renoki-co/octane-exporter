@@ -113,6 +113,17 @@ return [
 
 This package is pretty straightforward. Upon installing it, it will register the route at `/exporter/group/octane-metrics` and you can point Prometheus towards it for scraping.
 
+```yaml
+scrape_configs:
+  - job_name: 'octane'
+    metrics_path: '/exporter/group/octane-metrics'
+    scrape_interval: 5
+    static_configs:
+      - targets: ['localhost:8000']
+        labels:
+          app: 'my-octane-app'
+```
+
 Please keep in mind that the metrics are calculated by-process. Point your Prometheus scraper to all instances that run the Octane start command.
 
 ```

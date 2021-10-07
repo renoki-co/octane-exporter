@@ -15,6 +15,11 @@ class TrackTerminatedRequests
      */
     public function handle(RequestTerminated $event): void
     {
+        // Do not track requests for the metrics endpoints.
+        if ($event->request->routeIs('laravel-exporter.metrics')) {
+            return;
+        }
+
         $this->incrementRequestsCount();
 
         $statusCode = $event->response->getStatusCode();
