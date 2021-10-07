@@ -52,6 +52,7 @@ class MetricsTest extends TestCase
             Request::create('/test2', 'GET'),
             Request::create('/test3', 'GET'),
             Request::create('/exporter/group/octane-metrics', 'GET'),
+            Request::create('/exporter/group/octane-metrics', 'GET'),
         ]);
 
         $app->bind('test-binding', function ($app) {
@@ -125,6 +126,11 @@ class MetricsTest extends TestCase
         $this->assertStringContainsString(
             'status="4xx_count"} 1',
             $client->responses[3]->original
+        );
+
+        $this->assertStringContainsString(
+            'status="total_count"} 3',
+            $client->responses[4]->original
         );
     }
 
