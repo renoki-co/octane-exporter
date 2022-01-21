@@ -65,8 +65,8 @@ class Table extends SwooleTable
             foreach ($this->schema as $columnName => $columnType) {
                 $this->rows[$key][$columnName] = match ($columnType) {
                     static::TYPE_STRING => '',
-                static::TYPE_INT => 0,
-                static::TYPE_FLOAT => 0.0,
+                    static::TYPE_INT => 0,
+                    static::TYPE_FLOAT => 0.0,
                 };
             }
         }
