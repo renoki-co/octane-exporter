@@ -43,13 +43,16 @@ abstract class TestCase extends Orchestra
 
         $factory->warm($app, Octane::defaultServicesToWarm());
 
-        $app['config']['app.providers'] = array_merge($app['config']['app.providers'] ?? [], $this->getPackageProviders($app));
-
         $this->createSwooleTables();
 
         return $app;
     }
 
+    /**
+     * Create a new application factory.
+     *
+     * @return ApplicationFactory
+     */
     protected function appFactory()
     {
         return new ApplicationFactory(realpath(__DIR__.'/../vendor/orchestra/testbench-core/laravel'));
