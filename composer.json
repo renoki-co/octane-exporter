@@ -22,7 +22,7 @@
     "require": {
         "laravel/framework": "^8.81|^9.0.1",
         "laravel/octane": "^1.2",
-        "renoki-co/laravel-exporter-contracts": "^1.4|^2.0"
+        "renoki-co/laravel-exporter-contracts": "^1.4|^2.1.1"
     },
     "autoload": {
         "psr-4": {
