@@ -14,7 +14,7 @@
     "require": {
         "php": "^8.0",
         "laravel/octane": "^1.0",
-        "renoki-co/laravel-exporter-contracts": "^1.4"
+        "renoki-co/laravel-exporter-contracts": "^2.1"
     },
     "autoload": {
         "psr-4": {
