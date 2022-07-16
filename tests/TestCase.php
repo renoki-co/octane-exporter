@@ -25,16 +25,6 @@ abstract class TestCase extends Orchestra
     /**
      * {@inheritdoc}
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->createSwooleTables();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function createApplication()
     {
         $factory = new ApplicationFactory(realpath(__DIR__.'/../vendor/orchestra/testbench-core/laravel'));
@@ -42,8 +32,6 @@ abstract class TestCase extends Orchestra
         $app = $this->appFactory()->createApplication();
 
         $factory->warm($app, Octane::defaultServicesToWarm());
-
-        $this->createSwooleTables();
 
         return $app;
     }

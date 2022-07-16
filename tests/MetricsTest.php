@@ -29,6 +29,8 @@ class MetricsTest extends TestCase
             Request::create('/exporter/group/octane-metrics', 'GET'),
         ]);
 
+        $this->createSwooleTables();
+
         $app->bind('test-binding', function ($app) {
             return $app['request'];
         });
@@ -54,6 +56,8 @@ class MetricsTest extends TestCase
             Request::create('/exporter/group/octane-metrics', 'GET'),
             Request::create('/exporter/group/octane-metrics', 'GET'),
         ]);
+
+        $this->createSwooleTables();
 
         $app->bind('test-binding', function ($app) {
             return $app['request'];
@@ -140,6 +144,8 @@ class MetricsTest extends TestCase
             Request::create('/exporter/group/octane-metrics', 'GET'),
         ]);
 
+        $this->createSwooleTables();
+
         $app->bind('test-binding', function ($app) {
             return $app['request'];
         });
@@ -168,6 +174,8 @@ class MetricsTest extends TestCase
         [$app, $worker, $client] = $this->createOctaneContext([
             Request::create('/exporter/group/octane-metrics', 'GET'),
         ]);
+
+        $this->createSwooleTables();
 
         $app->bind('test-binding', function ($app) {
             return $app['request'];
@@ -201,6 +209,8 @@ class MetricsTest extends TestCase
         [$app, $worker, $client] = $this->createOctaneContext([
             Request::create('/exporter/group/octane-metrics', 'GET'),
         ]);
+
+        $this->createSwooleTables();
 
         $app->bind('test-binding', function ($app) {
             return $app['request'];
