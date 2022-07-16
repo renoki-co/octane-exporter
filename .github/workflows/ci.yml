@@ -22,6 +22,9 @@ jobs:
         php:
           - '8.0'
           - '8.1'
+        swoole:
+          - swoole
+          - openswoole
         laravel:
           - 8.*
           - 9.*
@@ -34,7 +37,7 @@ jobs:
           - laravel: '9.*'
             testbench: '7.*'
 
-    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} --${{ matrix.prefer }}
+    name: "[${{ matrix.swoole }}] PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} --${{ matrix.prefer }}"
 
     steps:
     - uses: actions/checkout@v2.4.0
@@ -43,7 +46,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, swoole
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, ${{ matrix.swoole }}
         coverage: pcov
 
     - uses: actions/cache@v2.1.7
@@ -54,7 +57,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pecl install openswoole
         composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
         composer update --${{ matrix.prefer }} --prefer-dist --no-interaction --no-suggest
 
