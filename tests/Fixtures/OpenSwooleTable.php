@@ -5,46 +5,48 @@ namespace RenokiCo\OctaneExporter\Test\Fixtures;
 use Exception;
 use Swoole\Table as SwooleTable;
 
-class Table extends SwooleTable
+class OpenSwooleTable extends SwooleTable
 {
     protected $rows = [];
 
     protected $schema = [];
 
-    const TYPE_STRING = 'string';
-    const TYPE_INT = 'int';
-    const TYPE_FLOAT = 'float';
+    const TYPE_STRING = 0;
+    const TYPE_INT = 1;
+    const TYPE_FLOAT = 2;
 
     public function __construct($bits)
     {
         //
     }
 
-    public function create()
+    public function create(): bool
     {
-        //
+        return true;
     }
 
-    public function column($name, $type, $bits = 1000)
+    public function column(string $name, int $type, int $size = 0): bool
     {
         $this->schema[$name] = $type;
+
+        return true;
     }
 
-    public function incr($key, $column, $incrby = 1)
+    public function incr(string $key, string $column, int $incrBy = 1): int
     {
         $this->ensureKeys($key, $column);
 
-        $this->rows[$key][$column]++;
+        return $this->rows[$key][$column]++;
     }
 
-    public function decr($key, $column, $decrby = 1)
+    public function decr(string $key, string $column, int $decrBy = 1): int
     {
         $this->ensureKeys($key, $column);
 
-        $this->rows[$key][$column]--;
+        return $this->rows[$key][$column]--;
     }
 
-    public function get($key, $column = null)
+    public function get(string $key, string $column = ''): array|string|int|float|bool
     {
         $this->ensureKeys($key, $column);
 
@@ -53,9 +55,9 @@ class Table extends SwooleTable
             : $this->rows[$key];
     }
 
-    protected function ensureKeys($key, $column = null)
+    protected function ensureKeys($key, $column = '')
     {
-        if (! isset($this->schema[$column]) && ! is_null($column)) {
+        if (! isset($this->schema[$column]) && $column !== '') {
             throw new Exception("Column {$column} not found in testing Swoole table.");
         }
 

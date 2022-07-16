@@ -1,7 +1,15 @@
 {
     "name": "renoki-co/octane-exporter",
     "description": "Export Laravel Octane metrics using this Prometheus exporter.",
-    "keywords": ["laravel", "php", "octane", "swoole", "metrics", "grafana", "prometheus"],
+    "keywords": [
+        "laravel",
+        "php",
+        "octane",
+        "swoole",
+        "metrics",
+        "grafana",
+        "prometheus"
+    ],
     "license": "Apache-2.0",
     "homepage": "https://github.com/renoki-co/octane-exporter",
     "authors": [
@@ -12,9 +20,9 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "laravel/octane": "^1.0",
-        "renoki-co/laravel-exporter-contracts": "^1.4"
+        "laravel/framework": "^8.81|^9.7.0",
+        "laravel/octane": "^1.2.5",
+        "renoki-co/laravel-exporter-contracts": "^1.4|^2.1.1"
     },
     "autoload": {
         "psr-4": {
@@ -31,8 +39,9 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.5",
-        "orchestra/testbench": "^6.24",
-        "orchestra/testbench-core": "^6.28"
+        "orchestra/testbench": "^6.28|^7.0",
+        "orchestra/testbench-core": "^6.28|^7.0",
+        "phpunit/phpunit": "^9.5.13"
     },
     "config": {
         "sort-packages": true

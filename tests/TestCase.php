@@ -11,7 +11,8 @@ use Laravel\Octane\Testing\Fakes\FakeClient;
 use Laravel\Octane\Testing\Fakes\FakeWorker;
 use Mockery;
 use Orchestra\Testbench\TestCase as Orchestra;
-use RenokiCo\OctaneExporter\Test\Fixtures\Table;
+use RenokiCo\OctaneExporter\Test\Fixtures\OpenSwooleTable;
+use RenokiCo\OctaneExporter\Test\Fixtures\SwooleTable;
 
 abstract class TestCase extends Orchestra
 {
@@ -25,16 +26,6 @@ abstract class TestCase extends Orchestra
     /**
      * {@inheritdoc}
      */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->createSwooleTables();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function createApplication()
     {
         $factory = new ApplicationFactory(realpath(__DIR__.'/../vendor/orchestra/testbench-core/laravel'));
@@ -43,13 +34,14 @@ abstract class TestCase extends Orchestra
 
         $factory->warm($app, Octane::defaultServicesToWarm());
 
-        $app['config']['app.providers'] = array_merge($app['config']['app.providers'] ?? [], $this->getPackageProviders($app));
-
-        $this->createSwooleTables();
-
         return $app;
     }
 
+    /**
+     * Create a new application factory.
+     *
+     * @return ApplicationFactory
+     */
     protected function appFactory()
     {
         return new ApplicationFactory(realpath(__DIR__.'/../vendor/orchestra/testbench-core/laravel'));
@@ -141,14 +133,26 @@ abstract class TestCase extends Orchestra
         $mock = FacadesOctane::partialMock();
 
         foreach ($tables as $name => $columns) {
-            $table = new Table(explode(':', $name)[1] ?? 1000);
+            if (extension_loaded('openswoole')) {
+                $table = new OpenSwooleTable(explode(':', $name)[1] ?? 1000);
 
-            foreach ($columns ?? [] as $columnName => $column) {
-                $table->column($columnName, match (explode(':', $column)[0] ?? 'string') {
-                    'string' => Table::TYPE_STRING,
-                    'int' => Table::TYPE_INT,
-                    'float' => Table::TYPE_FLOAT,
-                }, explode(':', $column)[1] ?? 1000);
+                foreach ($columns ?? [] as $columnName => $column) {
+                    $table->column($columnName, match (explode(':', $column)[0] ?? OpenSwooleTable::TYPE_STRING) {
+                        'string' => OpenSwooleTable::TYPE_STRING,
+                        'int' => OpenSwooleTable::TYPE_INT,
+                        'float' => OpenSwooleTable::TYPE_FLOAT,
+                    }, explode(':', $column)[1] ?? 1000);
+                }
+            } elseif (extension_loaded('swoole')) {
+                $table = new SwooleTable(explode(':', $name)[1] ?? 1000);
+
+                foreach ($columns ?? [] as $columnName => $column) {
+                    $table->column($columnName, match (explode(':', $column)[0] ?? SwooleTable::TYPE_STRING) {
+                        'string' => SwooleTable::TYPE_STRING,
+                        'int' => SwooleTable::TYPE_INT,
+                        'float' => SwooleTable::TYPE_FLOAT,
+                    }, explode(':', $column)[1] ?? 1000);
+                }
             }
 
             $table->create();
