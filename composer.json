@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "ext-swoole": "^4.11",
+        "ext-openswoole": "^4.11",
         "laravel/framework": "^8.81|^9.7.0",
         "laravel/octane": "^1.2.5",
         "renoki-co/laravel-exporter-contracts": "^1.4|^2.1.1"
