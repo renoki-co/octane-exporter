@@ -5,7 +5,7 @@ namespace RenokiCo\OctaneExporter\Test\Fixtures;
 use Exception;
 use Swoole\Table as SwooleTable;
 
-class Table extends SwooleTable
+class OpenSwooleTable extends SwooleTable
 {
     protected $rows = [];
 
